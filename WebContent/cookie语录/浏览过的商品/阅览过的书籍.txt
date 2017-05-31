@@ -1,0 +1,77 @@
+①	<a href="book.jsp?book=JavaWeb">Java Web</a><br><br>
+	<a href="book.jsp?book=Java">Java</a><br><br>
+	<a href="book.jsp?book=Oracle">Oracle</a><br><br>
+	<a href="book.jsp?book=Ajax">Ajax</a><br><br>
+	<a href="book.jsp?book=JavaScript">JavaScript</a><br><br>
+	<a href="book.jsp?book=Android">Android</a><br><br>
+	<a href="book.jsp?book=Jbpm">Jbpm</a><br><br>
+	<a href="book.jsp?book=Struts">Struts</a><br><br>
+	<a href="book.jsp?book=Hibernate">Hibernate</a><br><br>
+	<a href="book.jsp?book=Spring">Spring</a><br><br>
+
+②
+	<% 
+		String book = request.getParameter("book");
+	
+		//把书的信息以 Cookie 方式传回给浏览器，删除一个 Cookie
+		//1. 确定要被删除的 Cookie：
+		//前提: ATGUIGU_BOOK_ 开头的 Cookie 数量大于或等于 5，
+		Cookie [] cookies = request.getCookies();
+		
+		//保存所有的 ATGUIGU_BOOK_ 开头的 Cookie
+		List<Cookie> bookCookies = new ArrayList<Cookie>();
+		//用来保存和 books.jsp 传入的 book 匹配的那个 Cookie
+		Cookie tempCookie = null;
+		
+		if(cookies != null && cookies.length > 0){
+			for(Cookie c: cookies){
+				String cookieName = c.getName();
+				if(cookieName.startsWith("ATGUIGU_BOOK_")){
+					bookCookies.add(c);
+					
+					if(c.getValue().equals(book)){
+						tempCookie = c;
+					}
+				}
+			}
+		}
+		
+		//①. 且若从 books.jsp 页面传入的 book 不在 ATGUIGU_BOOK_ 的 Cookie 中则删除较早的那个 Cookie
+		//（ ATGUIGU_BOOK_  数组的第一个 Cbookie），
+		if(bookCookies.size() >= 5 && tempCookie == null){
+			tempCookie = bookCookies.get(0);
+		}
+		
+		//②. 若在其中，则删除该 Cookie
+		if(tempCookie != null){
+			tempCookie.setMaxAge(0);//找到tempCookie 删除 则cookie集合没有了tempocookie这个值了
+			response.addCookie(tempCookie);//再增加tempcookie到cookie集合去 则把新增加的cookie排序到最后面
+		}
+	
+		//2. 把从 books.jsp 传入的 book 作为一个 Cookie 返回
+		
+		Cookie cookie = new Cookie("ATGUIGU_BOOK_" + book, book);
+		response.addCookie(cookie);
+		
+	%>
+
+
+
+②	<% 
+		//显示最近浏览的 5 本书
+		//获取所有的 Cookie
+		Cookie [] cookies = request.getCookies();
+	
+		//从中筛选出 Book 的 Cookie：如果 cookieName 为 ATGUIGU_BOOK_ 开头的即符合条件
+		//显示 cookieValue
+		if(cookies != null && cookies.length > 0){
+			for(Cookie c: cookies){
+				String cookieName = c.getName();
+				if(cookieName.startsWith("ATGUIGU_BOOK_")){
+					out.println(c.getValue());
+					out.print("<br>");
+				}
+			}
+		}
+
+	%>

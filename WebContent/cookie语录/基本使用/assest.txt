@@ -1,0 +1,15 @@
+Cookie [] cookies = request.getCookies();
+if(cookies != null && cookies.length > 0){
+     for(Cookies cookies: cookies){
+              if("cookiePath".equals(cookies.getName())){
+                      cookieValue = cookie.getValue();
+          }  
+  }
+}
+
+
+
+
+int a = 4;
+Assert.assertEquals(a,3);
+捕获的值是a，用Assert来判断捕获的值是否为给定的参数，如a是否为3，返回值 布尔类型
